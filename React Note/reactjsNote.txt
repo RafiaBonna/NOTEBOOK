@@ -182,3 +182,225 @@ my-app/
   │   └── styles/
   │       └── App.css
   ├── package.json
+📘 ReactJS Notes (Continuation from Previous)
+6. React Router (Routing in React)
+🔹 কেন দরকার?
+
+React হলো Single Page Application (SPA) → মানে পুরো সাইট একটা HTML ফাইল দিয়ে লোড হয়।
+
+আলাদা আলাদা পেজ লোড হয় না, শুধু component পরিবর্তন হয়।
+
+Navigation এর জন্য react-router-dom ব্যবহার করা হয়।
+
+🔹 Installation
+npm install react-router-dom
+
+🔹 Basic Example
+import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
+import Home from "./pages/Home";
+import About from "./pages/About";
+
+function App() {
+  return (
+    <BrowserRouter>
+      <nav>
+        <Link to="/">Home</Link> | 
+        <Link to="/about">About</Link>
+      </nav>
+
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/about" element={<About />} />
+      </Routes>
+    </BrowserRouter>
+  );
+}
+
+🔹 Important Components
+
+BrowserRouter → Routing এর main wrapper।
+
+Routes → সব route define করা হয় এখানে।
+
+Route → প্রতিটি path ও তার সাথে কোন component render হবে সেটা বলে।
+
+Link → সাধারণ anchor ট্যাগের মতো, কিন্তু page reload না করে navigate করে।
+
+useParams() → Dynamic route parameter নিতে ব্যবহৃত হয়।
+
+useNavigate() → Programmatically route change করা যায়।
+
+🔹 Dynamic Route Example
+<Route path="/user/:id" element={<User />} />
+
+function User() {
+  let { id } = useParams();
+  return <h1>User ID: {id}</h1>;
+}
+
+7. React Forms
+🔹 Controlled Components
+
+Form input element গুলো React state দ্বারা control করা হয়।
+
+import { useState } from "react";
+
+function MyForm() {
+  const [name, setName] = useState("");
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    alert(`Hello ${name}`);
+  };
+
+  return (
+    <form onSubmit={handleSubmit}>
+      <input 
+        type="text" 
+        value={name} 
+        onChange={(e) => setName(e.target.value)} 
+      />
+      <button type="submit">Submit</button>
+    </form>
+  );
+}
+
+🔹 Uncontrolled Components
+
+React state এর বদলে ref ব্যবহার করা হয়।
+
+import { useRef } from "react";
+
+function MyForm() {
+  const inputRef = useRef();
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    alert(`Hello ${inputRef.current.value}`);
+  };
+
+  return (
+    <form onSubmit={handleSubmit}>
+      <input type="text" ref={inputRef} />
+      <button type="submit">Submit</button>
+    </form>
+  );
+}
+
+8. React with API (Data Fetching)
+🔹 Using Fetch API
+import { useEffect, useState } from "react";
+
+function Users() {
+  const [users, setUsers] = useState([]);
+
+  useEffect(() => {
+    fetch("https://jsonplaceholder.typicode.com/users")
+      .then(res => res.json())
+      .then(data => setUsers(data));
+  }, []);
+
+  return (
+    <ul>
+      {users.map(u => <li key={u.id}>{u.name}</li>)}
+    </ul>
+  );
+}
+
+🔹 Using Axios
+npm install axios
+
+import { useEffect, useState } from "react";
+import axios from "axios";
+
+function Users() {
+  const [users, setUsers] = useState([]);
+
+  useEffect(() => {
+    axios.get("https://jsonplaceholder.typicode.com/users")
+         .then(res => setUsers(res.data));
+  }, []);
+
+  return (
+    <ul>
+      {users.map(u => <li key={u.id}>{u.name}</li>)}
+    </ul>
+  );
+}
+
+9. Context API (State Sharing Without Props)
+🔹 Problem: Props Drilling
+
+যখন parent → child → grandchild এর মধ্যে অনেক data পাঠাতে হয়, তখন props drilling ঝামেলা হয়।
+
+Context API দিয়ে global state শেয়ার করা যায়।
+
+🔹 Example:
+import { createContext, useContext, useState } from "react";
+
+const UserContext = createContext();
+
+function App() {
+  const [user, setUser] = useState("Rafia");
+  return (
+    <UserContext.Provider value={user}>
+      <Navbar />
+    </UserContext.Provider>
+  );
+}
+
+function Navbar() {
+  return <Profile />;
+}
+
+function Profile() {
+  const user = useContext(UserContext);
+  return <h1>Hello, {user}</h1>;
+}
+
+10. State Management with Redux
+🔹 কেন দরকার?
+
+যখন অ্যাপ বড় হয়, তখন শুধু props/state দিয়ে manage করা কঠিন হয়ে যায়।
+
+Redux একটি centralized store দেয় যেখানে সব state রাখা হয়।
+
+🔹 Install
+npm install redux react-redux
+
+🔹 Basic Flow
+
+Store → Central place for state।
+
+Action → কী করতে হবে সেটা বলে।
+
+Reducer → State কিভাবে update হবে সেটা বলে।
+
+Dispatch → Action পাঠানো হয়।
+
+11. Performance Optimization
+Techniques:
+
+React.memo() → Component memoize করে, props না বদলালে re-render হয় না।
+
+useMemo() → Expensive calculation memoize করে।
+
+useCallback() → Function re-render হওয়া বন্ধ করে।
+
+Lazy Loading → Code-splitting এর মাধ্যমে performance improve হয়।
+
+import React, { memo } from "react";
+
+const Child = memo(({ name }) => {
+  console.log("Rendered");
+  return <h1>{name}</h1>;
+});
+
+12. Best Practices
+
+✅ Components ছোট রাখা
+✅ Meaningful নাম ব্যবহার করা
+✅ Folder structure ঠিক রাখা
+✅ Reusable code লেখা
+✅ PropTypes বা TypeScript ব্যবহার করা
+✅ Unnecessary re-render এড়ানো
