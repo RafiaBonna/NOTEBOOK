@@ -556,3 +556,159 @@ Context API vs Redux
 React performance optimization techniques
 
 React lifecycle methods
+7. React Hooks
+
+React v16.8 এ Hooks এসেছে। এগুলো ব্যবহার করে আমরা state ও lifecycle features ফাংশনাল কম্পোনেন্টে ব্যবহার করতে পারি (আগে শুধু class component-এ সম্ভব ছিল)।
+
+7.1 useState
+
+Function component-এ state ম্যানেজ করার জন্য ব্যবহার হয়।
+
+Syntax:
+
+import { useState } from "react";
+
+function Counter() {
+  const [count, setCount] = useState(0);
+
+  return (
+    <div>
+      <p>Count: {count}</p>
+      <button onClick={() => setCount(count + 1)}>Increment</button>
+    </div>
+  );
+}
+
+
+এখানে count হচ্ছে state ভ্যালু, আর setCount হচ্ছে state আপডেট করার ফাংশন।
+
+7.2 useEffect
+
+Lifecycle method (componentDidMount, componentDidUpdate, componentWillUnmount) এর বিকল্প।
+
+মূলত side effect এর জন্য ব্যবহৃত হয় (যেমন: API call, event listener, DOM manipulation)।
+
+Syntax:
+
+import { useState, useEffect } from "react";
+
+function Example() {
+  const [data, setData] = useState([]);
+
+  useEffect(() => {
+    fetch("https://api.example.com/items")
+      .then(res => res.json())
+      .then(data => setData(data));
+  }, []); // dependency array
+
+  return <ul>{data.map(item => <li key={item.id}>{item.name}</li>)}</ul>;
+}
+
+
+[] দিলে effect শুধু একবার (component mount হলে) রান করবে।
+
+dependency দিলে ([count]) – count পরিবর্তন হলেই effect রান করবে।
+
+7.3 useContext
+
+Props drilling এড়ানোর জন্য ব্যবহার করা হয়।
+
+Context API এর সাথে মিলে কাজ করে।
+
+Example:
+
+import { createContext, useContext } from "react";
+
+const UserContext = createContext();
+
+function App() {
+  return (
+    <UserContext.Provider value="Rafia">
+      <Profile />
+    </UserContext.Provider>
+  );
+}
+
+function Profile() {
+  const user = useContext(UserContext);
+  return <h1>Hello, {user}</h1>;
+}
+
+7.4 useRef
+
+DOM element বা mutable value ট্র্যাক করার জন্য ব্যবহৃত হয়।
+
+Example:
+
+import { useRef } from "react";
+
+function TextInput() {
+  const inputRef = useRef();
+
+  const focusInput = () => {
+    inputRef.current.focus();
+  };
+
+  return (
+    <div>
+      <input ref={inputRef} type="text" />
+      <button onClick={focusInput}>Focus</button>
+    </div>
+  );
+}
+
+7.5 useReducer
+
+Complex state ম্যানেজ করার জন্য ব্যবহার হয় (Redux-এর মতো কাজ করে)।
+
+Example:
+
+import { useReducer } from "react";
+
+const initialState = 0;
+
+function reducer(state, action) {
+  switch (action.type) {
+    case "increment": return state + 1;
+    case "decrement": return state - 1;
+    default: return state;
+  }
+}
+
+function Counter() {
+  const [count, dispatch] = useReducer(reducer, initialState);
+
+  return (
+    <div>
+      <p>Count: {count}</p>
+      <button onClick={() => dispatch({ type: "increment" })}>+</button>
+      <button onClick={() => dispatch({ type: "decrement" })}>-</button>
+    </div>
+  );
+}
+
+7.6 Custom Hooks
+
+Reusable logic বানানোর জন্য ব্যবহার হয়।
+
+Example:
+
+import { useState, useEffect } from "react";
+
+function useFetch(url) {
+  const [data, setData] = useState(null);
+
+  useEffect(() => {
+    fetch(url)
+      .then(res => res.json())
+      .then(setData);
+  }, [url]);
+
+  return data;
+}
+
+function App() {
+  const users = useFetch("https://api.example.com/users");
+  return <div>{JSON.stringify(users)}</div>;
+}
+
