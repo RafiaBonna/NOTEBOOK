@@ -1,0 +1,15 @@
+src/
+├── components/          // (Header, Footer, Navbar, Sidebar) 
+├── pages/               // সকল Route-এর মূল ফাইল
+│   ├── users/           // (AddUser.jsx, ManageUser.jsx) - Existing
+│   ├── category/        // (AddCategory.jsx, ManageCategory.jsx) - Existing
+│   ├── catalog/         // (AddProduct.jsx, ManageProducts.jsx, ManageBrands.jsx) - NEW
+│   ├── orders/          // (ManageOrders.jsx, ManageReturns.jsx) - NEW
+│   ├── inventory/       // (InventoryStock.jsx, ManagePurchases.jsx, ManageSuppliers.jsx) - NEW
+│   ├── finance/         // (ManageInvoices.jsx, ManageRefunds.jsx) - NEW
+│   ├── marketing/       // (ManageCoupons.jsx) - NEW
+│   ├── reports/         // (SalesReport.jsx) - NEW
+│   ├── Master.jsx       // (আপনার মূল Layout ফাইল) - Existing
+│   ├── Dashboard.jsx    // (ড্যাশবোর্ড) - NEW
+│   └── ManageCustomers.jsx // (গ্রাহক তালিকা) - NEW
+└── App.jsx              // (Routing)
